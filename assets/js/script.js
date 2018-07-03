@@ -1,7 +1,7 @@
 let c = document.getElementById("myCanvas");
 let ctx = c.getContext("2d");
-let ballX = 100; //starting position of ball on X-axis
-let ballY = 100; //starting position of ball on Y-axis
+let ballX = 700; //starting position of ball on X-axis
+let ballY = 300; //starting position of ball on Y-axis
 let ballSpeedX = 5; //speed of ball on X-axis
 let ballSpeedY = 3; // speed of ball on Y-axis
 const FPS = 1000 / 60; //frames per second
@@ -11,10 +11,16 @@ let p1Paddle = 400;
 let p1Speed = 15;
 
 function moveP1Paddle(event) {
-	if (event.keyCode === 40) {
-		p1Paddle += p1Speed;
-	} else if (event.keyCode === 38) {
-		p1Paddle -= p1Speed;
+	if (event.keyCode === 40) { //checks to see if the DOWN ARROW was pressed
+		if (p1Paddle + 90 <= CANVAS_HEIGHT) { //prevents the paddle from going out of the lower boundries of canvas
+			p1Paddle += p1Speed; //moves to paddle UP
+
+		}
+		
+	} else if (event.keyCode === 38) { //checks to see if UP arrow was pressed
+		if (p1Paddle >= 0) { //prevents the paddle from going out of the upper boundries of canvas
+			p1Paddle -= p1Speed; //moves the paddle UP
+		}
 	}
 }
 
@@ -23,7 +29,7 @@ function startGame() {
 	drawCanvasAndBall();
 }
 
-function checkBallLocation() {
+function checkBallCollision() {
 
 	if (ballX + 10 > CANVAS_WIDTH) {
 		ballSpeedX = -ballSpeedX; //if the ball goes out of frame on the right side, changes it's direction by turning the "5" -> "-5"
@@ -33,6 +39,8 @@ function checkBallLocation() {
 		ballSpeedY = -ballSpeedY; //if the ball goes out of frame on the top side, changes it's direction by turning the "3" -> "-3"
 	} else if (ballY < 0) {
 		ballSpeedY = -ballSpeedY; //if the ball goes out of frame on the top side, changes it's direction by turning the "-3" -> "3"
+	} else if ( ballX === 60 && ballY >= p1Paddle && ballY <= p1Paddle + 80) {
+		ballSpeedX = -ballSpeedX
 	}
 
 }
@@ -57,7 +65,10 @@ function drawCanvasAndBall() {
 	ctx.fillStyle = 'white';
 	ctx.fillRect(50,p1Paddle,10,80);
 
-	checkBallLocation() //calls the function to check if the ball is out of bounds every frame
+	checkBallCollision() //calls the function to check if the ball is out of bounds or has collided with the paddles every frame
+	console.log(p1Paddle);
+	console.log(ballX, ballY)
+
 
 	window.addEventListener("keydown", moveP1Paddle);
 
